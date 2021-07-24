@@ -1,31 +1,53 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
+import personService from './services/persons.js'
 
 const App = () => {
-  const [persons, setPersons] = useState([])
-  const [ newName, setNewName ] = useState('')
-  const [ newNumber, setNewNumber ] = useState('')
-  const [ newFilter, setNewFilter ] = useState('')
+  const [ persons, setPersons ] = useState([])
+  const [ name, setName ] = useState('')
+  const [ number, setNumber ] = useState('')
+  const [ filter, setFilter ] = useState('')
 
   useEffect(() =>
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response => setPersons(response.data))
+    personService.getAll().then(setPersons)
   , [])
 
-  const addNewEntry = (e) => {
+  const addNewPerson = async (e) => {
     e.preventDefault()
     
-    const entry = {
-      name: newName,
-      number: newNumber
-    }
+    const person = {name, number}
 
-    if (persons.some((element) => element.name === newName)) {
-      alert(`${newName} has already been added to the phonebook!`)
+    const existingPerson = persons.find((person) => person.name === name)
+    if (existingPerson) {
+
+      if (existingPerson.number) {
+        console.log("Person already exists in array, prompting update", existingPerson)
+        if (!window.confirm(`Update ${name}'s number from ${existingPerson.number} to ${number || "blank"}?`)) return
+      }
+
+      const updatedPerson = await personService.update({...existingPerson, number})
+      setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
+
     } else {
-      console.log("Add name: ", newName)
-      setPersons(persons.concat(entry)) 
+
+      const newPerson = await personService.addNew(person)
+      console.log("Person added to database: ", newPerson)
+      setPersons(persons.concat(newPerson)) 
+
+    }
+  }
+
+  const handleDelete = async (personToBeDeleted) => {
+    const isConfirmed = window.confirm(`Confirm deletion of ${personToBeDeleted.name}?`)
+    if (!isConfirmed) return
+    try {
+      await personService.deletePerson(personToBeDeleted)
+      console.log("Removed person from database", personToBeDeleted)
+      setPersons(persons.filter(person => person.id !== personToBeDeleted.id))  
+    } catch (e) {
+      console.log("Tried to delete following person, but they didn't exist in the database", personToBeDeleted)
+      alert("Something went wrong. Refreshing data from database.")
+      personService.getAll().then(setPersons)
     }
   }
 
@@ -34,20 +56,20 @@ const App = () => {
   )
   
   const formProps = {
-    submitHandler: addNewEntry,
-    name: newName,
-    nameHandler: createHandler(setNewName),
-    number: newNumber,
-    numberHandler: createHandler(setNewNumber)
+    submitHandler: addNewPerson,
+    name: name,
+    nameHandler: createHandler(setName),
+    number: number,
+    numberHandler: createHandler(setNumber)
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <NewEntry {...formProps}/>
+      <NewPerson {...formProps}/>
       <h2>Numbers</h2>
-      <FilterBox filterString={newFilter} handler={createHandler(setNewFilter)}/>
-      <Persons persons={persons} filterString={newFilter}/>
+      <FilterBox filterString={filter} handler={createHandler(setFilter)}/>
+      <Persons persons={persons} filterString={filter} handleDelete={handleDelete}/>
     </div>
   )
 }
@@ -58,9 +80,9 @@ const FilterBox = ({filterString, handler}) => (
   </>
 )
 
-const NewEntry = ({submitHandler, name, nameHandler, number, numberHandler}) => (
+const NewPerson = ({submitHandler, name, nameHandler, number, numberHandler}) => (
   <>
-    Add new entry:
+    Add new person:
     <form onSubmit={submitHandler}>
       <div>name: <input value={name} onChange={nameHandler}/></div>
       <div>Phone number: <input value={number} onChange={numberHandler}/></div>
@@ -69,19 +91,40 @@ const NewEntry = ({submitHandler, name, nameHandler, number, numberHandler}) => 
   </>
 )
 
-const Persons = ({persons, filterString}) => {
+const Persons = ({persons, filterString, handleDelete}) => {
 
-  const filterFunction = person => person.name.toLowerCase().includes(filterString.toLowerCase()) 
-  const sortFunction = (a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+  const filterFunction = person => (
+    person
+      .name
+    .toLowerCase()
+    .includes(filterString.toLowerCase())
+  )
+
+  const sortFunction = (a, b) => (
+    a.name.toLowerCase() > b.name.toLowerCase() ?
+    1 :
+    -1
+  )
+  
   const filteredPersons = persons
                           .filter(filterFunction)
                           .sort(sortFunction)
 
   return(
     <ul>
-      {filteredPersons.map(person => <li key={person.name}>{person.name} {person.number}</li>)}
+      {filteredPersons.map(person => <PhonebookItem key={person.id} person={person} handleDelete={handleDelete}/>)}
     </ul>
   )
+}
+
+const PhonebookItem = ({person, handleDelete}) => {
+  return (
+    <li>{person.name} {person.number} <DeleteButton person={person} handleDelete={() => handleDelete(person)}/></li>
+  )
+}
+
+const DeleteButton = ({handleDelete}) => {
+  return <button onClick={handleDelete}>Delete</button>
 }
 
 export default App
