@@ -7,10 +7,32 @@ const App = () => {
   const [ name, setName ] = useState('')
   const [ number, setNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ notification, setNotification ] = useState({text: null, color: 'snow'})
 
   useEffect(() =>
     personService.getAll().then(setPersons)
   , [])
+
+  function showNotification(text, color) {
+    setNotification({text, color})
+    setTimeout(() => setNotification({...notification, text: null}), 3000)
+  }
+
+  async function updatePerson(existingPerson) {
+    if (existingPerson.number) {
+      console.log("Person already exists in array, prompting update", existingPerson)
+      if (!window.confirm(`Update ${name}'s number from ${existingPerson.number} to ${number || "blank"}?`)) return
+    }
+    try {
+      const updatedPerson = await personService.update({...existingPerson, number})
+      setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
+      showNotification(`Updated ${updatedPerson.name}'s number to ${number}`, 'green')  
+    } catch (e) {
+      console.log(e)
+      showNotification(`Oops, ${existingPerson.name} doesn't exist in the database. Refetching data.`, 'red')
+      personService.getAll().then(setPersons)
+    }
+  }
 
   const addNewPerson = async (e) => {
     e.preventDefault()
@@ -20,18 +42,12 @@ const App = () => {
     const existingPerson = persons.find((person) => person.name === name)
     if (existingPerson) {
 
-      if (existingPerson.number) {
-        console.log("Person already exists in array, prompting update", existingPerson)
-        if (!window.confirm(`Update ${name}'s number from ${existingPerson.number} to ${number || "blank"}?`)) return
-      }
-
-      const updatedPerson = await personService.update({...existingPerson, number})
-      setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
+      updatePerson(existingPerson)
 
     } else {
 
       const newPerson = await personService.addNew(person)
-      console.log("Person added to database: ", newPerson)
+      showNotification(`Added ${newPerson.name}`, 'green')
       setPersons(persons.concat(newPerson)) 
 
     }
@@ -42,12 +58,12 @@ const App = () => {
     if (!isConfirmed) return
     try {
       await personService.deletePerson(personToBeDeleted)
-      console.log("Removed person from database", personToBeDeleted)
+      showNotification(`Deleted ${personToBeDeleted.name}`, 'green')
       setPersons(persons.filter(person => person.id !== personToBeDeleted.id))  
     } catch (e) {
       console.log("Tried to delete following person, but they didn't exist in the database", personToBeDeleted)
-      alert("Something went wrong. Refreshing data from database.")
       personService.getAll().then(setPersons)
+      showNotification(`Oops, ${personToBeDeleted.name} doesn't exist in the database. Refetching data.`, 'red')
     }
   }
 
@@ -66,6 +82,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification {...notification}/>
       <NewPerson {...formProps}/>
       <h2>Numbers</h2>
       <FilterBox filterString={filter} handler={createHandler(setFilter)}/>
@@ -125,6 +142,24 @@ const PhonebookItem = ({person, handleDelete}) => {
 
 const DeleteButton = ({handleDelete}) => {
   return <button onClick={handleDelete}>Delete</button>
+}
+
+const Notification = ({text, color}) => {
+  if (!text) return null
+
+  const style = {
+    fontSize: 30,
+    color: color,
+    backgroundColor: 'snow',
+    border: 5,
+    borderStyle: 'solid',
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 16,
+    textAlign: 'center'
+  }
+
+  return <div style={style}>{text}</div>
 }
 
 export default App
