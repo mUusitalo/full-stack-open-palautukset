@@ -1,0 +1,1 @@
+# Tässä kansiossa on pelkkä muokattu frontend puhelinluetteloon. Backend on [tässä repossa](https://github.com/mUusitalo/osa3-full-stack-open-palautukset)
