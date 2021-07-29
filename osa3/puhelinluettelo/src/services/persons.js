@@ -1,7 +1,7 @@
 // Tässä kansiossa on pelkkä muokattu frontend puhelinluetteloon. Backend on repossa https://github.com/mUusitalo/osa3-full-stack-open-palautukset
 import axios from 'axios'
 
-const BASE_URL = 'http://guarded-ravine-51375.herokuapp.com/api/persons'
+const BASE_URL = '/api/persons'
 
 async function getAll() {
     return (await axios.get(BASE_URL)).data
