@@ -20,18 +20,26 @@ const App = () => {
   }
 
   async function updatePerson(existingPerson) {
-    if (existingPerson.number) {
+    try {
       console.log("Person already exists in array, prompting update", existingPerson)
       if (!window.confirm(`Update ${name}'s number from ${existingPerson.number} to ${number || "blank"}?`)) return
-    }
-    try {
       const updatedPerson = await personService.update({...existingPerson, number})
       setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
       showNotification(`Updated ${updatedPerson.name}'s number to ${number}`, 'green')  
     } catch (e) {
       console.log(e)
-      showNotification(`Oops, ${existingPerson.name} doesn't exist in the database. Refetching data.`, 'red')
-      personService.getAll().then(setPersons)
+      switch(e.response.status) {
+        case 404:
+          showNotification(`Oops, ${existingPerson.name} doesn't exist in the database. Refetching data.`, 'red')
+          setPersons(await personService.getAll());
+          break
+        case 400:
+          showNotification(e.response.data.error, 'red')
+          break
+        default:
+          showNotification(`Oops, something went wrong!`, 'red')
+          break
+      }
     }
   }
 
@@ -41,15 +49,19 @@ const App = () => {
     const person = {name, number}
 
     const existingPerson = persons.find((person) => person.name === name)
+
     if (existingPerson) {
 
       updatePerson(existingPerson)
 
     } else {
-
-      const newPerson = await personService.addNew(person)
-      showNotification(`Added ${newPerson.name}`, 'green')
-      setPersons(persons.concat(newPerson)) 
+      try {
+        const newPerson = await personService.addNew(person)
+        showNotification(`Added ${newPerson.name}`, 'green')
+        setPersons(persons.concat(newPerson)) 
+      } catch (e) {
+        showNotification(e.response.data.error, 'red')
+      }
 
     }
   }
