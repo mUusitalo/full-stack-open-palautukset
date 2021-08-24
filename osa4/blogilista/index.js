@@ -1,6 +1,6 @@
 const http = require('http')
 
-const { PORT=3003 } = require('./utils/config.js')
+const { PORT } = require('./utils/config.js')
 const log = require('./utils/log.js')
 const app = require('./app')
 
