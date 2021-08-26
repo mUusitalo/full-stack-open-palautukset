@@ -52,11 +52,20 @@ testBlogList = [
 ]
 Object.freeze(testBlogList)
 
+const testBlogListToJSONApplied = testBlogList.map(blog => {
+  const newBlog = {...blog}
+  newBlog.id = newBlog._id
+  delete newBlog._id
+  delete newBlog.__v
+  return newBlog
+})
+
 async function getBlogsInDb() {
     return (await Blog.find({})).map(blog => blog.toJSON())
 }
 
 module.exports = {
     testBlogList,
+    testBlogListToJSONApplied,
     getBlogsInDb,
 }
