@@ -1,6 +1,6 @@
 const Blog = require('../models/blog')
 
-testBlogList = [
+blogList = [
     {
       _id: "5a422a851b54a676234d17f7",
       title: "React patterns",
@@ -50,22 +50,37 @@ testBlogList = [
       __v: 0
     }  
 ]
-Object.freeze(testBlogList)
+Object.freeze(blogList)
 
-const testBlogListToJSONApplied = testBlogList.map(blog => {
+singleblog = {
+  _id: "6127851c7889f74284719a0a",
+  title: "The cost of JavaScript in 2019",
+  author: "Addy Osmani",
+  url: "https://v8.dev/blog/cost-of-javascript-2019",
+  likes: 2,
+  __v: 0
+}
+Object.freeze(singleblog)
+
+function createJSONFormattedBlog(blog) {
   const newBlog = {...blog}
   newBlog.id = newBlog._id
   delete newBlog._id
   delete newBlog.__v
   return newBlog
-})
+}
+
+const singleBlogJSONFormatted = createJSONFormattedBlog(singleblog)
+const blogListJSONFormatted = blogList.map(createJSONFormattedBlog)
 
 async function getBlogsInDb() {
     return (await Blog.find({})).map(blog => blog.toJSON())
 }
 
 module.exports = {
-    testBlogList,
-    testBlogListToJSONApplied,
+    blogList,
+    JSONFormattedBlogList,
+    singleBlog,
+    JSONFormattedSingleBlog,
     getBlogsInDb,
 }

@@ -8,7 +8,7 @@ const api = supertest(app);
 
 beforeEach(async () => {
     await Blog.deleteMany({})
-    await Blog.insertMany(helper.testBlogList)
+    await Blog.insertMany(helper.blogList)
 })
 
 describe('controllers/blog', () => {
@@ -27,11 +27,11 @@ describe('controllers/blog', () => {
     
             // This test is kind of redundant because the next one would also fail if the number of returned blogs is incorrect
             test('returns correct number of blogs', async () => {
-                expect(response.body).toHaveLength(helper.testBlogList.length)
+                expect(response.body).toHaveLength(helper.blogList.length)
             })
     
             test('returns all content in correct order', async () => {
-                expect(response.body).toEqual(helper.testBlogListToJSONApplied)
+                expect(response.body).toEqual(helper.JSONFormattedBlogList)
             })
         })
 
@@ -59,6 +59,14 @@ describe('controllers/blog', () => {
             expect(blog._id).not.toBeDefined()
         })
     })
+
+    //describe('POST /api/blogs', () => {
+    //    describe('when database is empty and input is valid', () => {
+    //        test('adds blog into database', async () => {
+    //            
+    //        })
+    //    })
+    //})
 })
 
 afterAll(() => {
