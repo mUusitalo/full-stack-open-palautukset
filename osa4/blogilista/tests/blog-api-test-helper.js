@@ -52,7 +52,7 @@ blogList = [
 ]
 Object.freeze(blogList)
 
-singleblog = {
+singleBlog = {
   _id: "6127851c7889f74284719a0a",
   title: "The cost of JavaScript in 2019",
   author: "Addy Osmani",
@@ -60,7 +60,7 @@ singleblog = {
   likes: 2,
   __v: 0
 }
-Object.freeze(singleblog)
+Object.freeze(singleBlog)
 
 function createJSONFormattedBlog(blog) {
   const newBlog = {...blog}
@@ -70,10 +70,10 @@ function createJSONFormattedBlog(blog) {
   return newBlog
 }
 
-const singleBlogJSONFormatted = createJSONFormattedBlog(singleblog)
-const blogListJSONFormatted = blogList.map(createJSONFormattedBlog)
+const JSONFormattedSingleBlog = createJSONFormattedBlog(singleBlog)
+const JSONFormattedBlogList = blogList.map(createJSONFormattedBlog)
 
-async function getBlogsInDb() {
+async function getBlogsInDB() {
     return (await Blog.find({})).map(blog => blog.toJSON())
 }
 
@@ -82,5 +82,5 @@ module.exports = {
     JSONFormattedBlogList,
     singleBlog,
     JSONFormattedSingleBlog,
-    getBlogsInDb,
+    getBlogsInDB,
 }

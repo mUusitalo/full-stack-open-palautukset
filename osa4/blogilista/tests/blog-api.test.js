@@ -6,17 +6,14 @@ const Blog = require('../models/blog')
 const helper = require('./blog-api-test-helper')
 const api = supertest(app);
 
-beforeEach(async () => {
-    await Blog.deleteMany({})
-    await Blog.insertMany(helper.blogList)
-})
-
 describe('controllers/blog', () => {
     describe('GET /api/blogs', () => {
         describe('when database has blogs', () => {
             let response
 
             beforeAll(async () => {
+                await Blog.deleteMany({})
+                await Blog.insertMany(helper.blogList)
                 response = await api.get('/api/blogs')
             })
 
@@ -33,6 +30,12 @@ describe('controllers/blog', () => {
             test('returns all content in correct order', async () => {
                 expect(response.body).toEqual(helper.JSONFormattedBlogList)
             })
+
+            test("Blog id field doesn't have underscore", async () => {
+                const blog = (await api.get('/api/blogs')).body[0]
+                expect(blog.id).toBeDefined()
+                expect(blog._id).not.toBeDefined()
+            })    
         })
 
         describe('when database is empty', () => {
@@ -52,21 +55,64 @@ describe('controllers/blog', () => {
                 expect(response.body).toHaveLength(0)
             })
         })
-
-        test("Blog id field doesn't have underscore", async () => {
-            const blog = (await api.get('/api/blogs')).body[0]
-            expect(blog.id).toBeDefined()
-            expect(blog._id).not.toBeDefined()
-        })
     })
 
-    //describe('POST /api/blogs', () => {
-    //    describe('when database is empty and input is valid', () => {
-    //        test('adds blog into database', async () => {
-    //            
-    //        })
-    //    })
-    //})
+    describe('POST /api/blogs', () => {
+        describe('when database is empty and input is valid', () => {
+            let response
+            let blogsInDB
+
+            beforeAll(async () => {
+                await Blog.deleteMany({})
+                response = await api
+                    .post('/api/blogs')
+                    .send(helper.singleBlog)
+                blogsInDB = await helper.getBlogsInDB()
+            })
+
+            test('returns added blog', () => {
+                expect(response.status).toBe(201)
+                expect(response.body).toStrictEqual(helper.JSONFormattedSingleBlog)
+            })
+ 
+            test('increases list length by one', () => {
+                expect(blogsInDB.length).toBe(1)
+            })
+ 
+            test('adds correct data to database', () => {
+                expect(blogsInDB).toEqual([helper.JSONFormattedSingleBlog])
+            })
+        })
+
+        describe('when database has blogs and input is valid', () => {
+            let response
+            let blogsInDB
+
+            beforeAll(async () => {
+                await Blog.deleteMany({})
+                await Blog.insertMany(helper.blogList)
+
+                response = await api
+                    .post('/api/blogs')
+                    .send(helper.singleBlog)
+                
+                blogsInDB = await helper.getBlogsInDB()
+            })
+
+            test('returns added blog', () => {
+                expect(response.status).toBe(201)
+                expect(response.body).toStrictEqual(helper.JSONFormattedSingleBlog)
+            })
+ 
+            test('increases list length by one', () => {
+                expect(blogsInDB.length).toBe(helper.blogList.length + 1)
+            })
+ 
+            test('adds correct data to database', () => {
+                expect(blogsInDB).toEqual([...helper.JSONFormattedBlogList, helper.JSONFormattedSingleBlog])
+            })
+        })
+    })
 })
 
 afterAll(() => {
