@@ -58,12 +58,15 @@ describe('controllers/blog', () => {
     })
 
     describe('POST /api/blogs', () => {
-        describe('when database is empty and input is valid', () => {
+        beforeEach(async () => {
+            await Blog.deleteMany()
+        })
+
+        describe('can add single blog when database is empty', () => {
             let response
             let blogsInDB
 
             beforeAll(async () => {
-                await Blog.deleteMany({})
                 response = await api
                     .post('/api/blogs')
                     .send(helper.singleBlog)
@@ -84,12 +87,11 @@ describe('controllers/blog', () => {
             })
         })
 
-        describe('when database has blogs and input is valid', () => {
+        describe('can add single blog when database already has blogs', () => {
             let response
             let blogsInDB
 
             beforeAll(async () => {
-                await Blog.deleteMany({})
                 await Blog.insertMany(helper.blogList)
 
                 response = await api
@@ -112,6 +114,10 @@ describe('controllers/blog', () => {
                 expect(blogsInDB).toEqual([...helper.JSONFormattedBlogList, helper.JSONFormattedSingleBlog])
             })
         })
+
+        //describe('likes is set to 0 if it is undefined', () => {
+        //    
+        //})
     })
 })
 
