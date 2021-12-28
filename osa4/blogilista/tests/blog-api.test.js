@@ -119,12 +119,14 @@ describe('controllers/blog', () => {
             let response
 
             beforeAll(async () => {
-                response = await api.post('/api/blogs').send(helper.noLikesBlog)
+                const {likes, ...noLikesBlog} = helper.singleBlog
+                response = await api.post('/api/blogs').send(noLikesBlog)
             })
 
             test('returns added blog with zero likes', () => {
+                const zeroLikesBlog = {...helper.JSONFormattedSingleBlog, likes: 0}
                 expect(response.status).toBe(201)
-                expect(response.body).toStrictEqual(helper.JSONFormattedZeroLikesBlog)
+                expect(response.body).toStrictEqual(zeroLikesBlog)
             })
         })
     })
