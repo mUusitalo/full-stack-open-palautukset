@@ -115,9 +115,18 @@ describe('controllers/blog', () => {
             })
         })
 
-        //describe('likes is set to 0 if it is undefined', () => {
-        //    
-        //})
+        describe('likes is set to 0 if it is undefined', () => {
+            let response
+
+            beforeAll(async () => {
+                response = await api.post('/api/blogs').send(helper.noLikesBlog)
+            })
+
+            test('returns added blog with zero likes', () => {
+                expect(response.status).toBe(201)
+                expect(response.body).toStrictEqual(helper.JSONFormattedZeroLikesBlog)
+            })
+        })
     })
 })
 

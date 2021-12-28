@@ -73,6 +73,10 @@ function createJSONFormattedBlog(blog) {
 const JSONFormattedSingleBlog = createJSONFormattedBlog(singleBlog)
 const JSONFormattedBlogList = blogList.map(createJSONFormattedBlog)
 
+const noLikesBlog = {...singleBlog}
+delete noLikesBlog.likes
+const JSONFormattedZeroLikesBlog = {...JSONFormattedSingleBlog, likes: 0}
+
 async function getBlogsInDB() {
     return (await Blog.find({})).map(blog => blog.toJSON())
 }
@@ -82,5 +86,7 @@ module.exports = {
     JSONFormattedBlogList,
     singleBlog,
     JSONFormattedSingleBlog,
+    noLikesBlog,
+    JSONFormattedZeroLikesBlog,
     getBlogsInDB,
 }
