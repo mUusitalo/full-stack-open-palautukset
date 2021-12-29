@@ -129,6 +129,26 @@ describe('controllers/blog', () => {
                 expect(response.body).toStrictEqual(zeroLikesBlog)
             })
         })
+
+        describe('title and url are required', () => {
+            test('responds with status 400 if title is undefined', async () => {
+                const {title, ...noTitleBlog} = helper.singleBlog
+                const response = await api.post('/api/blogs').send(noTitleBlog)
+                expect(response.status).toBe(400)
+            })
+
+            test('responds with status 400 if url is undefined', async () => {
+                const {url, ...noURLBlog} = helper.singleBlog
+                const response = await api.post('/api/blogs').send(noURLBlog)
+                expect(response.status).toBe(400)
+            })
+
+            test('responds with status 400 if both title and url are undefined', async () => {
+                const {title, url, ...noTitleOrURLBlog} = helper.singleBlog
+                const response = await api.post('/api/blogs').send(noTitleOrURLBlog)
+                expect(response.status).toBe(400)
+            })
+        })
     })
 })
 

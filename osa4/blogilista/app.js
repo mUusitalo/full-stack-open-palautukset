@@ -15,10 +15,22 @@ async function connectToDatabase() {
     }
 }
 
+function errorHandler(error, req, res, next) {
+    log.error(error.message)
+
+    switch(error.name) {
+        case 'ValidationError':
+            return res.status(400).send({error: error.message})
+        default:
+            next(error)
+    }
+}
+
 connectToDatabase()
 
 const app = express();
 app.use(cors())
 app.use(express.json())
 app.use('/api/blogs', blogsRouter)
+app.use(errorHandler)
 module.exports = app;

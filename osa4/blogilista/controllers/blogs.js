@@ -1,3 +1,5 @@
+require('express-async-errors')
+
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog.js')
 
