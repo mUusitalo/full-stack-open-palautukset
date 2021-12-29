@@ -150,6 +150,48 @@ describe('controllers/blog', () => {
             })
         })
     })
+    
+    describe('DELETE /api/blogs/:id', () => {
+        describe("Given id is in valid format", () => { 
+            let singleId = helper.JSONFormattedSingleBlog.id 
+
+            beforeEach(async () => {
+                await Blog.deleteMany({})
+            })
+
+            describe("Database has multiple blogs", () => {
+                test("Should respond with status 204 and return deleted blog when id exists", async () => {
+                    await Blog.insertMany([...helper.blogList, helper.singleBlog])
+                    let response = await api.delete(`/api/blogs/${singleId}`)
+                    expect(response.status).toBe(204)
+                })
+
+                test("Should respond with status 404 when id doesn't exist", async () => {
+                    await Blog.insertMany(helper.blogList)
+                    let response = await api.delete(`/api/blogs/${singleId}`)
+                    expect(response.status).toBe(404)
+                })
+            })
+
+            describe("Database only has one or no blogs", () => {
+                test("Should respond with status 204 when id exists", async () => {
+                    await Blog.create(helper.singleBlog)
+                    let response = await api.delete(`/api/blogs/${singleId}`)
+                    expect(response.status).toBe(204)
+                })
+
+                test("Should respond with status 404 when id doesn't exist", async () => {
+                    let response = await api.delete(`/api/blogs/${singleId}`)
+                    expect(response.status).toBe(404)
+                })
+            })
+        })
+
+        test("It should respond with status 400 when id is invalid", async () => {
+            let response = await api.delete('/api/blogs/thisisaninvalidid1234')
+            expect(response.status).toBe(400)
+        })
+    })
 })
 
 afterAll(() => {

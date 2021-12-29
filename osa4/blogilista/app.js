@@ -20,7 +20,9 @@ function errorHandler(error, req, res, next) {
 
     switch(error.name) {
         case 'ValidationError':
-            return res.status(400).send({error: error.message})
+            return res.status(400).json({error: error.message})
+        case 'CastError':
+            return res.status(400).json({error: `Invalid id: ${req.body.id}`})
         default:
             next(error)
     }
