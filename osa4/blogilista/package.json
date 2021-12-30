@@ -19,11 +19,12 @@
   },
   "homepage": "https://github.com/mUusitalo/full-stack-open-palautukset#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
-    "mongoose": "^5.13.7"
+    "mongoose": "^5.13.14"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
