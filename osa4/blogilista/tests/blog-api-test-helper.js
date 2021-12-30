@@ -62,6 +62,16 @@ singleBlog = {
 }
 Object.freeze(singleBlog)
 
+modifiedSingleBlog = {
+  _id: singleBlog._id,
+  title: "Modified title",
+  author: "Unnamed",
+  url: "someurl",
+  likes: 3,
+  __v: 0
+}
+Object.freeze(modifiedSingleBlog)
+
 function createJSONFormattedBlog(blog) {
   const newBlog = {...blog}
   newBlog.id = newBlog._id
@@ -71,10 +81,16 @@ function createJSONFormattedBlog(blog) {
 }
 
 const JSONFormattedSingleBlog = createJSONFormattedBlog(singleBlog)
+const JSONFormattedModifiedSingleBlog = createJSONFormattedBlog(modifiedSingleBlog)
 const JSONFormattedBlogList = blogList.map(createJSONFormattedBlog)
 
 async function getBlogsInDB() {
-    return (await Blog.find({})).map(blog => blog.toJSON())
+  return (await Blog.find({})).map(blog => blog.toJSON())
+}
+
+async function getBlogFromDBByID(id) {
+  const foundblog = (await Blog.findById(id)).toJSON()
+  return foundblog
 }
 
 module.exports = {
@@ -82,5 +98,8 @@ module.exports = {
     JSONFormattedBlogList,
     singleBlog,
     JSONFormattedSingleBlog,
+    modifiedSingleBlog,
+    JSONFormattedModifiedSingleBlog,
     getBlogsInDB,
+    getBlogFromDBByID,
 }
