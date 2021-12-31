@@ -3,7 +3,7 @@ const supertest = require('supertest')
 
 const app = require('../app');
 const Blog = require('../models/blog')
-const helper = require('./blog-api-test-helper')
+const helper = require('./blogs-test-helper.js')
 const api = supertest(app);
 
 describe('controllers/blog', () => {
