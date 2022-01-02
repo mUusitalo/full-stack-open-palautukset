@@ -1,49 +1,103 @@
 const User = require('../models/user.js')
 
-let usersDBFormat = [
+const users = {
+  DBFormat: [
     {
-      name: 'Nathanial',
-      username: 'Nathanial_Pagac3',
-      passwordHash: '$2a$10$ZBJ2Kw27IXAxBagpaUdcGebgDajMO.qjD6CmPdIx2SHfNVmpT1Dne',
-      _id: '61cf4d55dbfd8737583558d6',
+      name: 'Ahmad',
+      username: 'Ahmad_McKenzie1',
+      passwordHash: '$2a$10$UXsDTc5aDkJObsMjBu85Ku7/uWuZgl4ASKO8MBY8QB.9q8idlnaFe',
+      _id: "61d18fa9c7c2dc8bda893f60",
       __v: 0
     },
     {
-      name: 'Terry',
-      username: 'Terry.Wiegand89',
-      passwordHash: '$2a$10$s1IRFY8U5fUl.3cw.8Co/OV3.xL9dr7O9G8UXhZtMfyTRWod9f7Iu',
-      _id: '61cf4d55dbfd8737583558d7',
+      name: 'Christ',
+      username: 'Christ0',
+      passwordHash: '$2a$10$v.VD/kjG5380HOQuhJrIMOGZdgM9qf8nHkFBXbfWsAmJ58NbrfP1W',
+      _id: "61d18fa9c7c2dc8bda893f61",
       __v: 0
     },
     {
-      name: 'Kirsten',
-      username: 'Kirsten86',
-      passwordHash: '$2a$10$yDEBMZvi00Au.CGcbNw/P.BH9ekF.C0XFfSoEzGT6wBtRyr1g6tsC',
-      _id: '61cf4d55dbfd8737583558d8',
+      name: 'Salvador',
+      username: 'Salvador_Dickinson5',
+      passwordHash: '$2a$10$zIxv5zQu75eSSOPXckCT9.j9h5rr8I.QNZ04IxWSgJ0cPga1il/6C',
+      _id: "61d18fa9c7c2dc8bda893f62",
       __v: 0
     },
     {
-      name: 'Janelle',
-      username: 'Janelle.Cole',
-      passwordHash: '$2a$10$Ie.tCJ/5iVH2M4Vs5jKaUuje0qITgX6GvYqgxVbvs09tlLkoyQQmO',
-      _id: '61cf4d55dbfd8737583558d9',
+      name: 'Cordell',
+      username: 'Cordell_Kutch88',
+      passwordHash: '$2a$10$CUbqC.t1ylLCh07Ea6sXrOkQkGlqppRnXgp63X7rDAgN5qv7feNFu',
+      _id: "61d18faac7c2dc8bda893f63",
       __v: 0
     },
     {
-      name: 'Josefina',
-      username: 'Josefina.Frami39',
-      passwordHash: '$2a$10$BRuoEZbeUwl4ETnViQzc/ezVhUmYN8/x35ckbeMdeyrk4SFFIcsJa',
-      _id: '61cf4d55dbfd8737583558da',
+      name: 'Montana',
+      username: 'Montana_Lynch',
+      passwordHash: '$2a$10$/uqWFLh3X/0f5tsF5ZbGAeRntDamNI0uZzkYxx5jXJ4uXq1/X4gkO',
+      _id: "61d18faac7c2dc8bda893f64",
       __v: 0
     }
-]
-
-let usersPublicFormat = usersDBFormat.map(createJSONFormattedUser)
+  ],
+  passwordFormat: [
+    {
+      name: 'Ahmad',
+      username: 'Ahmad_McKenzie1',
+      password: 'mqz7uNbsN1zbE3j'
+    },
+    {
+      name: 'Christ',
+      username: 'Christ0',
+      password: 'H39Tq0gsDEkPdbZ'
+    },
+    {
+      name: 'Salvador',
+      username: 'Salvador_Dickinson5',
+      password: 'i5sDasudyJIdeJ_'
+    },
+    {
+      name: 'Cordell',
+      username: 'Cordell_Kutch88',
+      password: 'OgQ9o_zWBPhTlyP'
+    },
+    {
+      name: 'Montana',
+      username: 'Montana_Lynch',
+      password: 'jK4A1btWUNWkI4G'
+    }
+  ],
+  JSONFormat: [
+    {
+      name: 'Ahmad',
+      username: 'Ahmad_McKenzie1',
+      id: "61d18fa9c7c2dc8bda893f60"
+    },
+    {
+      name: 'Christ',
+      username: 'Christ0',
+      id: "61d18fa9c7c2dc8bda893f61"
+    },
+    {
+      name: 'Salvador',
+      username: 'Salvador_Dickinson5',
+      id: "61d18fa9c7c2dc8bda893f62"
+    },
+    {
+      name: 'Cordell',
+      username: 'Cordell_Kutch88',
+      id: "61d18faac7c2dc8bda893f63"
+    },
+    {
+      name: 'Montana',
+      username: 'Montana_Lynch',
+      id: "61d18faac7c2dc8bda893f64"
+    }
+  ]
+}
 
 async function getUsersInDB() {
     return (await User.find({})).map(user => user.toJSON())
 }
-  
+
 async function getUserFromDBByID(id) {
     const foundUser = (await User.findById(id)).toJSON()
     return foundUser
@@ -51,11 +105,11 @@ async function getUserFromDBByID(id) {
 
 function createJSONFormattedUser(user) {
     const newUser = {...user}
-    delete newUser.passwordHash
     newUser.id = newUser._id
+    delete newUser.passwordHash
     delete newUser._id
     delete newUser.__v
     return newUser
 }
 
-module.exports = { usersDBFormat, usersPublicFormat, getUsersInDB, getUserFromDBByID }
+module.exports = { users, getUsersInDB, getUserFromDBByID, createJSONFormattedUser }

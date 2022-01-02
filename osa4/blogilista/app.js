@@ -9,7 +9,7 @@ const log = require('./utils/log.js');
 
 async function connectToDatabase() {
     try {
-        await mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+        await mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
         log.info('Connected to database!');
     } catch (e) {
         log.error('Could not connect to database!', e);

@@ -1,7 +1,7 @@
 require('express-async-errors')
 const usersRouter = require('express').Router()
 
-const createPasswordHash = require('../utils/createPasswordHash.js')
+const { createPasswordHash, validatePassword } = require('../utils/user-authentication-utils.js')
 const User = require('../models/user.js')
 
 usersRouter.get('/', async (req, res) => {
@@ -10,6 +10,7 @@ usersRouter.get('/', async (req, res) => {
 
 usersRouter.post('/', async (req, res) => {
   const { username, name, password } = req.body
+  validatePassword(password)
   const passwordHash = await createPasswordHash(password)
   const user = new User({username, name, passwordHash})
 
