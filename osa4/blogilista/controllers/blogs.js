@@ -2,14 +2,22 @@ require('express-async-errors')
 
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog.js')
+const User = require('../models/user.js')
+
 
 blogsRouter.get('/', async (req, res) => {
-  res.json(await Blog.find({}))
+  res
+    .json(await Blog.find({})
+    .populate('user', {username: 1, name: 1, id: 1}))
 })
 
 blogsRouter.post('/', async (req, res) => {
-  const blog = new Blog(req.body)
-  res.status(201).json(await blog.save())
+  debugger
+  const {_id: userID} = await User.findOne({}) // Later we'll get this from the token in req
+  const blog = new Blog({...req.body, user: userID})
+  const result = await blog.save()
+  await User.findByIdAndUpdate(userID, {$push: {'blogs': result._id}})
+  res.status(201).json(result)
 })
 
 blogsRouter.delete('/:id', async (req, res) => {

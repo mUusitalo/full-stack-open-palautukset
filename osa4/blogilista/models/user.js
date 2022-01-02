@@ -10,6 +10,10 @@ const userSchema = mongoose.Schema({
     },
     passwordHash: {type: String, required: true},
     name: String,
+    blogs: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Blog'
+    }]
 })
 
 userSchema.plugin(uniqueValidator, {message: 'Username {VALUE} has already been taken'})

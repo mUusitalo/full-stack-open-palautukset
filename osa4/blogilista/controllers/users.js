@@ -5,7 +5,9 @@ const { createPasswordHash, validatePassword } = require('../utils/user-authenti
 const User = require('../models/user.js')
 
 usersRouter.get('/', async (req, res) => {
-  res.json(await User.find({}))
+  res
+    .json(await User.find({})
+    .populate('blogs', {url: 1, title: 1, author: 1, id: 1}))
 })
 
 usersRouter.post('/', async (req, res) => {
