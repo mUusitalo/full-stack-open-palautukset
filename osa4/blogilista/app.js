@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 
 const { DB_URL } = require('./utils/config.js')
-const blogsRouter = require('./controllers/blogs.js');
+const blogsRouter = require('./controllers/blogs.js')
+const loginRouter = require('./controllers/login.js')
 const usersRouter = require('./controllers/users.js')
 const log = require('./utils/log.js');
 
@@ -35,6 +36,7 @@ const app = express();
 app.use(cors())
 app.use(express.json())
 app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
 app.use(errorHandler)
 module.exports = app;
