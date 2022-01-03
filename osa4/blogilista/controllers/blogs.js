@@ -12,7 +12,6 @@ blogsRouter.get('/', async (req, res) => {
 })
 
 blogsRouter.post('/', async (req, res) => {
-  debugger
   const {_id: userID} = await User.findOne({}) // Later we'll get this from the token in req
   const blog = new Blog({...req.body, user: userID})
   const result = await blog.save()
