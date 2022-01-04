@@ -25,6 +25,8 @@ function errorHandler(error, req, res, next) {
             return res.status(400).json({error: error.message})
         case 'CastError':
             return res.status(400).json({error: `Invalid id: ${req.body.id}`})
+        case 'JsonWebTokenError':
+            return res.status(401).json({error: 'Invalid token'})
         default:
             next(error)
     }
