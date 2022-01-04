@@ -13,7 +13,7 @@ blogsRouter.get('/', async (req, res) => {
 })
 
 blogsRouter.post('/', async (req, res) => {
-  const userID = getUserIDByToken(extractBearerToken(req))
+  const userID = getUserIDByToken(req.token)
   
   if (userID == null) {
     return res.status(401).json({error: "Invalid token"})
@@ -39,14 +39,6 @@ blogsRouter.put('/:id', async (req, res) => {
   if (newBlog) res.status(200).json(newBlog)
   else res.status(404).end()
 })
-
-function extractBearerToken(request) {
-  const authHeader = request.get('authorization')
-
-  return authHeader?.toLowerCase().startsWith('bearer ')
-    ? authHeader.substring(7)
-    : null
-}
 
 function getUserIDByToken(token) {
   if (token == null) return null
