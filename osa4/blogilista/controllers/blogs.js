@@ -12,21 +12,17 @@ blogsRouter.get('/', async (req, res) => {
     .populate('user', {username: 1, name: 1, id: 1}))
 })
 
-blogsRouter.post('/', async (req, res) => {
-  const userID = getUserIDByToken(req.token)
-
-  const blogResponse = await saveBlogToDBAndUpdateUser(req.body, userID)
-
+blogsRouter.post('/', userExtractor, async (req, res) => {
+  const blogResponse = await saveBlogToDBAndUpdateUser(req.body, req.user)
   res.status(201).json(blogResponse)
 })
 
-blogsRouter.delete('/:id', async (req, res) => {
-  const userID = getUserIDByToken(req.token)
+blogsRouter.delete('/:id', userExtractor, async (req, res) => {
   const blogToBeDeleted = await Blog.findById(req.params.id)
 
   if (!blogToBeDeleted) {return res.status(404).send()}
 
-  if (blogToBeDeleted.user.toString() !== userID.toString()) {
+  if (blogToBeDeleted.user.toString() !== req.user.toString()) {
     throw new jwt.JsonWebTokenError("Token does not match the blog's user")
   }
 
@@ -42,10 +38,11 @@ blogsRouter.put('/:id', async (req, res) => {
   else res.status(404).end()
 })
 
-function getUserIDByToken(token) {
-  const {id} = jwt.verify(token, process.env.SECRET)
-  if (id == null) throw new jwt.JsonWebTokenError('No id found in token')
-  return id
+function userExtractor(req, res, next) {
+  const {id} = jwt.verify(req.token, process.env.SECRET)
+  if (!id) {throw new jwt.JsonWebTokenError('No id found in token')}
+  req.user = id
+  next()
 }
 
 async function saveBlogToDBAndUpdateUser(blogContent, userID) {

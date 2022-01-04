@@ -1,6 +1,6 @@
+const cors = require('cors')
 const express = require('express')
 const mongoose = require('mongoose')
-const cors = require('cors')
 
 const { DB_URL } = require('./utils/config.js')
 const blogsRouter = require('./controllers/blogs.js')
@@ -51,6 +51,7 @@ app.use(express.json())
 app.use(tokenExtractor)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+// userExtractor is defined and used in controllers/blogs.js
 app.use('/api/blogs', blogsRouter)
 app.use(errorHandler)
 module.exports = app;
