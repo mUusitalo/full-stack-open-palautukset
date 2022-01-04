@@ -18,7 +18,7 @@ async function connectToDatabase() {
 }
 
 function errorHandler(error, req, res, next) {
-    log.error(error.message)
+    log.error({message: error.message, token: req.token})
 
     switch(error.name) {
         case 'ValidationError':

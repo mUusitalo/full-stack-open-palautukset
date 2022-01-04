@@ -14,10 +14,6 @@ blogsRouter.get('/', async (req, res) => {
 
 blogsRouter.post('/', async (req, res) => {
   const userID = getUserIDByToken(req.token)
-  
-  if (userID == null) {
-    return res.status(401).json({error: "Invalid token"})
-  }
 
   const blogResponse = await saveBlogToDBAndUpdateUser(req.body, userID)
 
@@ -25,12 +21,18 @@ blogsRouter.post('/', async (req, res) => {
 })
 
 blogsRouter.delete('/:id', async (req, res) => {
-  const deletedBlog = await Blog.findByIdAndRemove(req.params.id)
-  if (deletedBlog) {
-    res.status(204).send()
-  } else {
-    res.status(404).send()
+  const userID = getUserIDByToken(req.token)
+  const blogToBeDeleted = await Blog.findById(req.params.id)
+
+  if (!blogToBeDeleted) {return res.status(404).send()}
+
+  if (blogToBeDeleted.user.toString() !== userID.toString()) {
+    throw new jwt.JsonWebTokenError("Token does not match the blog's user")
   }
+
+  await blogToBeDeleted.delete()
+  res.status(204).send()
+  
 })
 
 blogsRouter.put('/:id', async (req, res) => {
@@ -41,9 +43,9 @@ blogsRouter.put('/:id', async (req, res) => {
 })
 
 function getUserIDByToken(token) {
-  if (token == null) return null
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  return decodedToken?.id ?? null
+  const {id} = jwt.verify(token, process.env.SECRET)
+  if (id == null) throw new jwt.JsonWebTokenError('No id found in token')
+  return id
 }
 
 async function saveBlogToDBAndUpdateUser(blogContent, userID) {

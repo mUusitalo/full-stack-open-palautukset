@@ -9,20 +9,20 @@ loginRouter.post('/', async (req, res) => {
     const {passwordHash, name, _id: id} = await User.findOne({username}) ?? {}
     
     if (await isCorrectPassword(password, passwordHash)) {
-        handleCorrectPassword(res, {username, name, id})
+        respondWithToken(res, {username, name, id})
     } else {
-        handleIncorrectPassword(res)
+        respondWithError(res)
     }
 })
 
-function handleCorrectPassword(response, {username, name, id}){
+function respondWithToken(response, {username, name, id}){
     const token = jwt.sign({username, id}, process.env.SECRET)
     response
         .status(200)
         .send({token, username, name})
 }
 
-function handleIncorrectPassword(response){
+function respondWithError(response){
     response
         .status(401)
         .send({error: "Invalid username or password"})
