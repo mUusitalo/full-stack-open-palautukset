@@ -1,6 +1,6 @@
 const res = require('dotenv').config();
 
-const REQUIRED_ENVIRONMENT_VARIABLES = ['DB_URL', 'TEST_DB_URL', 'PORT']
+const REQUIRED_ENVIRONMENT_VARIABLES = ['DB_URL', 'TEST_DB_URL', 'PORT', 'SECRET']
 
 function checkConfigValidity() {
     if (res.error) {
@@ -23,5 +23,6 @@ const DB_URL = process.env.NODE_ENV === 'test'
 module.exports = {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
+    SECRET: process.env.SECRET,
     DB_URL,
 }

@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken')
 
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog.js')
+const {SECRET} = require('../utils/config.js')
 const User = require('../models/user.js')
 
 
 blogsRouter.get('/', async (req, res) => {
-  res
-    .json(await Blog.find({})
-    .populate('user', {username: 1, name: 1, id: 1}))
+  res.json(await Blog.find({}).populate('user', {username: 1, name: 1, id: 1}))
+    
 })
 
 blogsRouter.post('/', userExtractor, async (req, res) => {
@@ -19,16 +19,14 @@ blogsRouter.post('/', userExtractor, async (req, res) => {
 
 blogsRouter.delete('/:id', userExtractor, async (req, res) => {
   const blogToBeDeleted = await Blog.findById(req.params.id)
-
   if (!blogToBeDeleted) {return res.status(404).send()}
 
   if (blogToBeDeleted.user.toString() !== req.user.toString()) {
     throw new jwt.JsonWebTokenError("Token does not match the blog's user")
   }
-
+  
   await blogToBeDeleted.delete()
   res.status(204).send()
-  
 })
 
 blogsRouter.put('/:id', async (req, res) => {
@@ -39,7 +37,7 @@ blogsRouter.put('/:id', async (req, res) => {
 })
 
 function userExtractor(req, res, next) {
-  const {id} = jwt.verify(req.token, process.env.SECRET)
+  const {id} = jwt.verify(req.token, SECRET)
   if (!id) {throw new jwt.JsonWebTokenError('No id found in token')}
   req.user = id
   next()

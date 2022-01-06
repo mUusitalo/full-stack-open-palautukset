@@ -21,6 +21,7 @@ userSchema.plugin(uniqueValidator, {message: 'Username {VALUE} has already been 
 userSchema.set('toJSON', {
     transform: (doc, ret) => {
         ret.id = ret._id.toString()
+        ret.blogs = ret?.blogs?.map(blog => blog instanceof mongoose.Types.ObjectId ? blog.toString() : blog)
         delete ret.passwordHash
         delete ret._id
         delete ret.__v

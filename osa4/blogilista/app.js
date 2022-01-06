@@ -19,7 +19,6 @@ async function connectToDatabase() {
 
 function errorHandler(error, req, res, next) {
     log.error({message: error.message, token: req.token})
-
     switch(error.name) {
         case 'ValidationError':
             return res.status(400).json({error: error.message})
@@ -33,7 +32,7 @@ function errorHandler(error, req, res, next) {
 }
 
 function tokenExtractor(req, res, next) {
-    const authHeader = req.get('authorization')
+    const authHeader = req.get('Authorization')
   
     const token = authHeader?.toLowerCase().startsWith('bearer ')
       ? authHeader.substring(7)

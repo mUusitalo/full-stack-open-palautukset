@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const supertest = require('supertest')
 
 const app = require('../app');
-const { createPasswordHash } = require('../utils/user-authentication-utils.js')
 const User = require('../models/user.js')
 const helper = require('./users-test-helper.js')
 
@@ -20,8 +19,6 @@ describe("POST /api/users", () => {
 
       usersInDB = await helper.getUsersInDB()
     })
-
-
 
     test("User creation succeeds with new username and valid data", async () => {
       const newUser = {...helper.users.passwordFormat[1]}

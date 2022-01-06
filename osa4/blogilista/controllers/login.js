@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 
 const loginRouter = require('express').Router()
 const User = require('../models/user.js')
+const {SECRET} = require('../utils/config.js')
 
 loginRouter.post('/', async (req, res) => {
     const {username, password} = req.body
@@ -16,7 +17,7 @@ loginRouter.post('/', async (req, res) => {
 })
 
 function respondWithToken(response, {username, name, id}){
-    const token = jwt.sign({username, id}, process.env.SECRET)
+    const token = jwt.sign({username, id}, SECRET)
     response
         .status(200)
         .send({token, username, name})
