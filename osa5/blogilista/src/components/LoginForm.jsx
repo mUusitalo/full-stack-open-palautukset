@@ -25,7 +25,7 @@ const LoginForm = ({handleLogin, handleError}) => {
                 <FormField name="username" value={username} onChange={setUsername}/>
                 <FormField name="password" value={password} onChange={setPassword} hidden="true"/>
             </div>
-            <button type="submit">login</button>
+            <button type="submit">log in</button>
         </form>
     )
 }
