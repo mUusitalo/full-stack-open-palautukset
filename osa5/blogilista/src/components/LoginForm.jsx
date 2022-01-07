@@ -1,25 +1,33 @@
-const LoginForm = ({password, username, handleLogin}) => {
+import {useState} from 'react'
+
+import FormField from './FormField'
+import loginService from '../services/login'
+
+const LoginForm = ({handleLogin, handleError}) => {
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        try {
+            const response = await loginService.login(username, password)
+            setUsername('')
+            setPassword('')
+            handleLogin(response)
+        } catch (e) {
+            handleError(e.response.data.error)
+        }
+    }
+
     return (
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit}>
             <div>
-                <Field name="username" value={username.value} onChange={username.onChange}/>
-                <Field name="password" value={password.value} onChange={password.onChange} hidden="true"/>
+                <FormField name="username" value={username} onChange={setUsername}/>
+                <FormField name="password" value={password} onChange={setPassword} hidden="true"/>
             </div>
             <button type="submit">login</button>
         </form>
     )
 }
-
-const Field = ({name, value, onChange, hidden}) => (
-    <div>
-        {name}
-        <input
-            type={hidden?.toLowerCase() === "true" ? "password" : "text"}
-            value={value}
-            name={name}
-            onChange={({target}) => onChange(target.value)}
-        />
-    </div>
-)
 
 export default LoginForm
