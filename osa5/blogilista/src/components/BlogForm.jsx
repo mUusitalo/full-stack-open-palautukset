@@ -1,4 +1,6 @@
 import {useState} from 'react'
+import PropTypes from 'prop-types'
+
 import blogService from '../services/blogs'
 import FormField from './FormField'
 
@@ -34,6 +36,11 @@ const BlogForm = ({handleCreateBlog, handleError}) => {
             </form>
         </div>
     )
+}
+
+BlogForm.propTypes = {
+    handleCreateBlog: PropTypes.func.isRequired,
+    handleError: PropTypes.func
 }
 
 export default BlogForm

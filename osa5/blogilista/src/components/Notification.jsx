@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const Notification = ({message, success=true}) => {
     if (!message) return null
 
@@ -13,6 +15,11 @@ const Notification = ({message, success=true}) => {
     }
   
     return <div style={style}>{message}</div>
+}
+
+Notification.propTypes = {
+  message: PropTypes.string,
+  success: PropTypes.bool
 }
 
 export default Notification

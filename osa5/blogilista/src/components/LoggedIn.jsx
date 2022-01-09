@@ -1,4 +1,5 @@
 import {useEffect, useState, useRef} from 'react'
+import PropTypes from 'prop-types'
 
 import Blog from './Blog'
 import BlogForm from './BlogForm'
@@ -67,6 +68,13 @@ const LoggedIn = ({user, handleLogout, handleError, handleSuccess}) => {
             )}
         </>
     )
+}
+
+LoggedIn.propTypes = {
+  user: PropTypes.object.isRequired,
+  handleLogout: PropTypes.func.isRequired,
+  handleError: PropTypes.func.isRequired,
+  handleSuccess: PropTypes.func.isRequired,
 }
 
 export default LoggedIn

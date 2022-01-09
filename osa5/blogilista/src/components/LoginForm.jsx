@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import PropTypes from 'prop-types'
 
 import FormField from './FormField'
 import loginService from '../services/login'
@@ -28,6 +29,11 @@ const LoginForm = ({handleLogin, handleError}) => {
             <button type="submit">log in</button>
         </form>
     )
+}
+
+LoginForm.propTypes = {
+    handleLogin: PropTypes.func.isRequired,
+    handleError: PropTypes.func,
 }
 
 export default LoginForm
