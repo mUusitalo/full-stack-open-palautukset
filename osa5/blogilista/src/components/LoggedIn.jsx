@@ -11,16 +11,33 @@ const LoggedIn = ({name, handleLogout, handleError, handleSuccess}) => {
 
     useEffect(() => {
         blogService.getAll().then(blogs =>
-          setBlogs( blogs )
+          sortAndSetBlogs(blogs)
         )  
-      }, [])
+    }, [])
 
-    const handleCreateBlog = (blog) => {
-        setBlogs([...blogs, blog])
+    const sortAndSetBlogs = newBlogs => {
+      setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
+    }
+
+    const handleCreateBlog = blog => {
+        sortAndSetBlogs([...blogs, blog])
         formRef.current.toggleVisibility()
         handleSuccess(`Created blog ${blog.title} by ${blog.author || "unnamed author"}`)
     }
 
+    const handleLike = async blog => {
+      try {
+        const newBlog = await blogService.like(blog)
+        sortAndSetBlogs(blogs.map(blog => 
+          blog.id === newBlog.id
+            ? {...newBlog, user:blog.user}
+            : blog
+        ))
+      } catch (e) {
+        handleError(e.response.data.error)
+      }
+    }
+    
     return (
         <>
             <h2>blogs</h2>
@@ -29,10 +46,15 @@ const LoggedIn = ({name, handleLogout, handleError, handleSuccess}) => {
               <button onClick={handleLogout}>log out</button>
             </p>
             <Togglable buttonLabel="create new blog" ref={formRef}>
-              <BlogForm {...{handleCreateBlog, handleError}}/>
+              <BlogForm {...{handleCreateBlog}}/>
             </Togglable>
             {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} />
+              <Blog {...{
+                key: blog.id,
+                blog,
+                handleError,
+                handleLike
+              }}/>
             )}
         </>
     )
