@@ -51,17 +51,17 @@ const App = () => {
         user 
           ?
             <LoggedIn {...{
-              name: user.name,
+              user,
               handleLogout,
               handleError,
-              handleSuccess: message => showNotification(message)
+              handleSuccess: message => showNotification(message),
             }}/>
           :
             <>
               <h2>login</h2>
               <LoginForm
                 {...{handleLogin, handleError}}
-                />
+              />
             </>
       }
     </>

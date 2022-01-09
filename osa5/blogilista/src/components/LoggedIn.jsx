@@ -5,22 +5,18 @@ import BlogForm from './BlogForm'
 import blogService from '../services/blogs'
 import Togglable from './Togglable'
 
-const LoggedIn = ({name, handleLogout, handleError, handleSuccess}) => {
+const LoggedIn = ({user, handleLogout, handleError, handleSuccess}) => {
     const [blogs, setBlogs] = useState([])
     const formRef = useRef()
 
     useEffect(() => {
         blogService.getAll().then(blogs =>
-          sortAndSetBlogs(blogs)
+          setBlogs(blogs)
         )  
     }, [])
 
-    const sortAndSetBlogs = newBlogs => {
-      setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
-    }
-
     const handleCreateBlog = blog => {
-        sortAndSetBlogs([...blogs, blog])
+        setBlogs([...blogs, {...blog, user}])
         formRef.current.toggleVisibility()
         handleSuccess(`Created blog ${blog.title} by ${blog.author || "unnamed author"}`)
     }
@@ -28,11 +24,21 @@ const LoggedIn = ({name, handleLogout, handleError, handleSuccess}) => {
     const handleLike = async blog => {
       try {
         const newBlog = await blogService.like(blog)
-        sortAndSetBlogs(blogs.map(blog => 
+        setBlogs(blogs.map(blog => 
           blog.id === newBlog.id
             ? {...newBlog, user:blog.user}
             : blog
         ))
+      } catch (e) {
+        handleError(e.response.data.error)
+      }
+    }
+
+    const handleDelete = async blog => {
+      try {
+        await blogService.deleteBlog(blog.id)
+        handleSuccess(`Deleted blog ${blog.title}`)
+        setBlogs([...blogs].filter(b => b.id !== blog.id))
       } catch (e) {
         handleError(e.response.data.error)
       }
@@ -42,18 +48,21 @@ const LoggedIn = ({name, handleLogout, handleError, handleSuccess}) => {
         <>
             <h2>blogs</h2>
             <p>
-              logged in as {name}
+              logged in as {user.name}
               <button onClick={handleLogout}>log out</button>
             </p>
             <Togglable buttonLabel="create new blog" ref={formRef}>
               <BlogForm {...{handleCreateBlog}}/>
             </Togglable>
-            {blogs.map(blog =>
+            {blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map(blog =>
               <Blog {...{
                 key: blog.id,
+                username: user.username,
                 blog,
-                handleError,
-                handleLike
+                handleLike,
+                handleDelete,
               }}/>
             )}
         </>
