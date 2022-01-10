@@ -25,7 +25,7 @@ function Blog({
           <p>{blog.user.name}</p>
           {username === blog.user.username
             && (
-            <button type="button" onClick={() => window.confirm(`Delete blog ${blog.title} by ${blog.author}?`) && handleDelete(blog)}>
+            <button type="button" onClick={() => window.confirm(`Delete blog ${blog.title} by ${blog.author || 'unnamed author'}?`) && handleDelete(blog)}>
               delete
             </button>
             )}

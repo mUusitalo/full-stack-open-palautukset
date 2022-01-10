@@ -16,10 +16,15 @@ function LoggedIn({
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
-  const handleCreateBlog = (blog) => {
-    setBlogs([...blogs, { ...blog, user }]);
-    formRef.current.toggleVisibility();
-    handleSuccess(`Created blog ${blog.title} by ${blog.author || 'unnamed author'}`);
+  const handleSubmitBlog = async ({ title, author, url }) => {
+    try {
+      const blog = await blogService.create({ title, author, url });
+      setBlogs([...blogs, { ...blog, user }]);
+      formRef.current.toggleVisibility();
+      handleSuccess(`Created blog ${blog.title} by ${blog.author || 'unnamed author'}`);
+    } catch (e) {
+      handleError(e.response.data.error);
+    }
   };
 
   const handleLike = async (blog) => {
@@ -53,7 +58,7 @@ function LoggedIn({
         <button type="button" onClick={handleLogout}>log out</button>
       </p>
       <Togglable buttonLabel="create new blog" ref={formRef}>
-        <BlogForm {...{ handleCreateBlog, handleError }} />
+        <BlogForm handleSubmit={handleSubmitBlog} />
       </Togglable>
       {blogs
         .sort((a, b) => b.likes - a.likes)
