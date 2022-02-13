@@ -2,7 +2,7 @@ const cors = require('cors')
 const express = require('express')
 const mongoose = require('mongoose')
 
-const { DB_URL } = require('./utils/config.js')
+const { DB_URL, NODE_ENV } = require('./utils/config.js')
 const blogsRouter = require('./controllers/blogs.js')
 const log = require('./utils/log.js');
 const loginRouter = require('./controllers/login.js')
@@ -52,5 +52,14 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 // userExtractor is defined and used in controllers/blogs.js
 app.use('/api/blogs', blogsRouter)
+
+// Testing utility routes:
+if (NODE_ENV === 'test') {
+    const testingRouter = require('./controllers/testing.js')
+    app.use('/api/testing', testingRouter)
+}
+
 app.use(errorHandler)
+
+
 module.exports = app;

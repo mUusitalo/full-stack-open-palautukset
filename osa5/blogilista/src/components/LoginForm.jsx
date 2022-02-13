@@ -26,7 +26,7 @@ function LoginForm({ handleLogin, handleError }) {
         <FormField name="username" value={username} onChange={setUsername} />
         <FormField name="password" value={password} onChange={setPassword} hidden="true" />
       </div>
-      <button type="submit">log in</button>
+      <button id="login-button" type="submit">log in</button>
     </form>
   );
 }
