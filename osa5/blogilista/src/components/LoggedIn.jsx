@@ -55,7 +55,7 @@ function LoggedIn({
         logged in as
         {' '}
         {user.name}
-        <button type="button" onClick={handleLogout}>log out</button>
+        <button id="logout-button" type="button" onClick={handleLogout}>log out</button>
       </p>
       <Togglable buttonLabel="create new blog" ref={formRef}>
         <BlogForm handleSubmit={handleSubmitBlog} />
