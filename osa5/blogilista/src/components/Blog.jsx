@@ -11,7 +11,7 @@ function Blog({
       {blog.title}
       {' '}
       {blog.author}
-      <button type="button" onClick={() => setVisible(!visible)}>{visible ? 'hide details' : 'show details'}</button>
+      <button className="show-details-button" type="button" onClick={() => setVisible(!visible)}>{visible ? 'hide details' : 'show details'}</button>
       {visible
         && (
         <div className="blog-details">
