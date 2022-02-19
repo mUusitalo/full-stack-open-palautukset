@@ -38,7 +38,7 @@ const reducer = (state = initialState, action) => {
 const vote = (id) => ({
   type: 'VOTE',
   data: {
-    id
+    id,
   }
 })
 
