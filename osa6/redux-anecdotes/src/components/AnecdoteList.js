@@ -7,10 +7,6 @@ const AnecdoteList = () => {
   const filter = useSelector(state => state.filter)
   const dispatch = useDispatch()
 
-  const showNotification = message => {
-    dispatch(setNotification(message, 5))
-  }
-
   return [...anecdotes]
     .sort((a, b) => b.votes - a.votes)
     .filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
@@ -23,7 +19,7 @@ const AnecdoteList = () => {
           has {anecdote.votes}
           <button onClick={() => {
             dispatch(vote(anecdote))
-            showNotification(`You voted '${anecdote.content}'`)
+            dispatch(setNotification(`You voted '${anecdote.content}'`, 5))
           }}>
             vote
           </button>
