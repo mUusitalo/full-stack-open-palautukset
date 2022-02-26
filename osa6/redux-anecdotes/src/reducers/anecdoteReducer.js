@@ -33,9 +33,14 @@ const vote = (id) => ({
   }
 })
 
-const createNew = (anecdote) => ({
+const createNew = (content) => ({
   type: 'CREATE_NEW',
-  data: {...asObject(anecdote)},
+  data: asObject(content),
+})
+
+const addNew = (anecdote) => ({
+  type: 'CREATE_NEW',
+  data: anecdote
 })
 
 const setAnecdotes = (anecdotes) => ({
@@ -47,5 +52,6 @@ export default reducer
 export {
   vote,
   createNew,
+  addNew,
   setAnecdotes,
 }
