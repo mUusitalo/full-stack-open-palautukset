@@ -14,11 +14,8 @@ const reducer = (state = [], action) => {
   console.log('state now: ', state)
   console.log('action', action)
   switch(action.type) {
-    case 'VOTE':
-      const id = action.data.id
-      const anecdoteToModify = state.find(anecdote => anecdote.id === id)
-      const modified = {...anecdoteToModify, votes: anecdoteToModify.votes + 1}
-      return state.map(anecdote => anecdote.id === id ? modified : anecdote)
+    case 'PUT':
+      return state.map(anecdote => anecdote.id === action.data.id ? action.data : anecdote)
     case 'APPEND':
       return state.concat(action.data)
     case 'SET':
@@ -28,12 +25,15 @@ const reducer = (state = [], action) => {
   }
 }
 
-const vote = (id) => ({
-  type: 'VOTE',
-  data: {
-    id,
+const vote = (anecdote) => {
+  return async dispatch => {
+    const modified = await anecdoteService.vote(anecdote)
+    dispatch({
+      type: 'PUT',
+      data: modified
+    })
   }
-})
+}
 
 const append = (anecdote) => ({
   type: 'APPEND',
