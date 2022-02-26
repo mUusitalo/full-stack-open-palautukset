@@ -12,7 +12,7 @@ const AnecdoteList = () => {
     setTimeout(() => dispatch(clearNotification()), 5000)
   }
 
-  return anecdotes
+  return [...anecdotes]
     .sort((a, b) => b.votes - a.votes)
     .filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
     .map(anecdote =>
