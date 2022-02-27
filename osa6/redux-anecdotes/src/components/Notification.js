@@ -14,5 +14,5 @@ const Notification = ({ notification }) => {
 }
 
 export default connect(
-  state => ({notification: state.notification})
+  state => ({notification: state.notification.message})
 )(Notification)
