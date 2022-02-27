@@ -1,0 +1,29 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "jest/globals": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "jest",
+        "react"
+    ],
+    "rules": {
+        "no-shadow": "off",
+        "no-console": "off",
+        "no-alert": "off",
+        "no-plusplus": ["error", {"allowForLoopAfterthoughts": true}],
+        "react/react-in-jsx-scope": "off"
+    }
+}
