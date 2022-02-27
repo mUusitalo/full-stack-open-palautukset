@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route, Link, useMatch  } from 'react-router-dom'
+import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom'
 
 import Anecdote from './components/Anecdote'
 
@@ -55,7 +55,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -65,6 +65,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
   }
 
   return (
@@ -97,27 +98,29 @@ const App = () => {
       author: 'Jez Humble',
       info: 'https://martinfowler.com/bliki/FrequencyReducesDifficulty.html',
       votes: 0,
-      id: 1
+      id: "1"
     },
     {
       content: 'Premature optimization is the root of all evil',
       author: 'Donald Knuth',
       info: 'http://wiki.c2.com/?PrematureOptimization',
       votes: 0,
-      id: 2
+      id: "2"
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(null)
+  const [notificationTimeoutID, setNotificationTimeoutID] = useState(null)
 
   const match = useMatch('/anecdotes/:id')
   const currentAnecdote = match
-    ? anecdotes.find(a => a.id === Number(match.params.id))
+    ? anecdotes.find(a => a.id === match.params.id)
     : null
   
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    showNotification(`Added new anecdote ${anecdote.content}`)
   }
 
   const anecdoteById = (id) =>
@@ -134,10 +137,18 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const showNotification = (message) => {
+    if (notificationTimeoutID) {clearTimeout(notificationTimeoutID)}
+    const id = setTimeout(() => setNotification(null), 5000)
+    setNotificationTimeoutID(id)
+    setNotification(message)
+  }
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification ? <>{notification}</> : null}
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
