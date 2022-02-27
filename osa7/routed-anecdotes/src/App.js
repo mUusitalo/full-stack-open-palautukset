@@ -53,9 +53,9 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const content = useField('text')
-  const author = useField('text')
-  const info = useField('text')
+  const [content, resetContent] = useField('text')
+  const [author, resetAuthor] = useField('text')
+  const [info, resetInfo] = useField('text')
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
@@ -70,7 +70,9 @@ const CreateNew = (props) => {
   }
 
   const resetAll = () => {
-    [content, author, info].forEach(field => field.reset())
+    resetContent()
+    resetAuthor()
+    resetInfo()
   }
 
   return (
