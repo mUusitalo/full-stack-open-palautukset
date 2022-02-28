@@ -14,7 +14,11 @@ function Notification({ message, success = true }) {
     textAlign: 'center',
   };
 
-  return <div className="notification" style={style}>{message}</div>;
+  return (
+    <div className="notification" style={style}>
+      {message}
+    </div>
+  );
 }
 
 Notification.propTypes = {

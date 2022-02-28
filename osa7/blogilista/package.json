@@ -5,6 +5,7 @@
   "dependencies": {
     "@testing-library/user-event": "^12.6.3",
     "axios": "^0.21.1",
+    "eslint-config-prettier": "^8.4.0",
     "prop-types": "^15.8.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -16,9 +17,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint . --ext .js,.jsx",
-    "fix": "eslint . --fix --ext .js,.jsx",
-    "cy:open": "cypress open"
+    "lint": "eslint . --ext .js,.jsx && prettier --check .",
+    "fix": "eslint . --fix --ext .js,.jsx && prettier --write .",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "browserslist": {
     "production": [
@@ -38,11 +40,8 @@
     "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.4.0",
     "cypress": "^9.4.1",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jest": "^24.7.0",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.28.0",
-    "eslint-plugin-react-hooks": "^4.3.0"
+    "eslint-plugin-react": "^7.29.2",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "prettier": "2.5.1"
   }
 }

@@ -6,9 +6,7 @@ import BlogForm from './BlogForm';
 import blogService from '../services/blogs';
 import Togglable from './Togglable';
 
-function LoggedIn({
-  user, handleLogout, handleError, handleSuccess,
-}) {
+function LoggedIn({ user, handleLogout, handleError, handleSuccess }) {
   const [blogs, setBlogs] = useState([]);
   const formRef = useRef();
 
@@ -21,7 +19,9 @@ function LoggedIn({
       const blog = await blogService.create({ title, author, url });
       setBlogs([...blogs, { ...blog, user }]);
       formRef.current.toggleVisibility();
-      handleSuccess(`Created blog ${blog.title} by ${blog.author || 'unnamed author'}`);
+      handleSuccess(
+        `Created blog ${blog.title} by ${blog.author || 'unnamed author'}`
+      );
     } catch (e) {
       handleError(e.response.data.error);
     }
@@ -30,9 +30,11 @@ function LoggedIn({
   const handleLike = async (blog) => {
     try {
       const newBlog = await blogService.like(blog);
-      setBlogs(blogs.map((blog) => (blog.id === newBlog.id
-        ? { ...newBlog, user: blog.user }
-        : blog)));
+      setBlogs(
+        blogs.map((blog) =>
+          blog.id === newBlog.id ? { ...newBlog, user: blog.user } : blog
+        )
+      );
     } catch (e) {
       handleError(e.response.data.error);
     }
@@ -52,10 +54,10 @@ function LoggedIn({
     <>
       <h2>blogs</h2>
       <p>
-        logged in as
-        {' '}
-        {user.name}
-        <button id="logout-button" type="button" onClick={handleLogout}>log out</button>
+        logged in as {user.name}
+        <button id="logout-button" type="button" onClick={handleLogout}>
+          log out
+        </button>
       </p>
       <Togglable buttonLabel="create new blog" ref={formRef}>
         <BlogForm handleSubmit={handleSubmitBlog} />
@@ -63,13 +65,14 @@ function LoggedIn({
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <Blog {...{
-            key: blog.id,
-            username: user.username,
-            blog,
-            handleLike,
-            handleDelete,
-          }}
+          <Blog
+            key={blog.id}
+            {...{
+              username: user.username,
+              blog,
+              handleLike,
+              handleDelete,
+            }}
           />
         ))}
     </>

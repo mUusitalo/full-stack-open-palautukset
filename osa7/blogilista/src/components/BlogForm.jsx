@@ -21,8 +21,18 @@ function BlogForm({ handleSubmit }) {
       <h2>Create new</h2>
       <form onSubmit={handleSubmitAndReset}>
         <div>
-          <FormField id="title" name="title" value={title} onChange={setTitle} />
-          <FormField id="author" name="author" value={author} onChange={setAuthor} />
+          <FormField
+            id="title"
+            name="title"
+            value={title}
+            onChange={setTitle}
+          />
+          <FormField
+            id="author"
+            name="author"
+            value={author}
+            onChange={setAuthor}
+          />
           <FormField id="url" name="url" value={url} onChange={setUrl} />
         </div>
         <button type="submit">create</button>

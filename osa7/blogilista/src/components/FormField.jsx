@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 
-function FormField({
-  name, value, onChange, hidden,
-}) {
+function FormField({ name, value, onChange, hidden }) {
   return (
     <div>
       <label htmlFor={name}>

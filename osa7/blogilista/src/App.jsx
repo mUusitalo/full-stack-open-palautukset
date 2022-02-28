@@ -18,7 +18,9 @@ function App() {
   }, []);
 
   const showNotification = (message, success = true) => {
-    if (notificationId) { clearTimeout(notificationId); } // cancel old timeout
+    if (notificationId) {
+      clearTimeout(notificationId);
+    } // cancel old timeout
 
     setNotification({ message, success });
     const id = setTimeout(() => setNotification({}), 5000);
@@ -45,27 +47,25 @@ function App() {
   };
   return (
     <>
-      <Notification message={notification?.message} success={notification?.success} />
-      {
-        user
-          ? (
-            <LoggedIn {...{
-              user,
-              handleLogout,
-              handleError,
-              handleSuccess: (message) => showNotification(message),
-            }}
-            />
-          )
-          : (
-            <>
-              <h2>login</h2>
-              <LoginForm
-                {...{ handleLogin, handleError }}
-              />
-            </>
-          )
-}
+      <Notification
+        message={notification?.message}
+        success={notification?.success}
+      />
+      {user ? (
+        <LoggedIn
+          {...{
+            user,
+            handleLogout,
+            handleError,
+            handleSuccess: (message) => showNotification(message),
+          }}
+        />
+      ) : (
+        <>
+          <h2>login</h2>
+          <LoginForm {...{ handleLogin, handleError }} />
+        </>
+      )}
     </>
   );
 }

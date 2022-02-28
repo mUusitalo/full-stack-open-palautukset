@@ -4,8 +4,10 @@ import { render, fireEvent } from '@testing-library/react';
 import Blog from './Blog';
 
 describe('<Blog/>', () => {
-  let blog; let component; let handleLike; let
-    handleDelete;
+  let blog;
+  let component;
+  let handleLike;
+  let handleDelete;
   beforeEach(() => {
     blog = {
       title: 'title',
@@ -22,13 +24,14 @@ describe('<Blog/>', () => {
     handleDelete = jest.fn();
 
     component = render(
-      <Blog {...{
-        blog,
-        username: 'username',
-        handleLike,
-        handleDelete,
-      }}
-      />,
+      <Blog
+        {...{
+          blog,
+          username: 'username',
+          handleLike,
+          handleDelete,
+        }}
+      />
     );
   });
 

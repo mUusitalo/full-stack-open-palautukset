@@ -32,5 +32,9 @@ async function deleteBlog(id) {
 }
 
 export default {
-  getAll, create, like, deleteBlog, setToken,
+  getAll,
+  create,
+  like,
+  deleteBlog,
+  setToken,
 };
