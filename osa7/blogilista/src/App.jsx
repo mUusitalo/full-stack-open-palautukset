@@ -4,11 +4,12 @@ import blogService from './services/blogs';
 import LoggedIn from './components/LoggedIn';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
+import { setNotification } from './reducers/notification';
+import { useDispatch } from 'react-redux';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState({});
-  const [notificationId, setNotificationId] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem('loggedInUser');
@@ -18,13 +19,7 @@ function App() {
   }, []);
 
   const showNotification = (message, success = true) => {
-    if (notificationId) {
-      clearTimeout(notificationId);
-    } // cancel old timeout
-
-    setNotification({ message, success });
-    const id = setTimeout(() => setNotification({}), 5000);
-    setNotificationId(id);
+    dispatch(setNotification(message, success, 5));
   };
 
   const handleLogin = (user) => {
@@ -47,10 +42,7 @@ function App() {
   };
   return (
     <>
-      <Notification
-        message={notification?.message}
-        success={notification?.success}
-      />
+      <Notification />
       {user ? (
         <LoggedIn
           {...{

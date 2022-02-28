@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
-function Notification({ message, success = true }) {
+function Notification() {
+  const message = useSelector((state) => state.notification.message);
+  const success = useSelector((state) => state.notification.success);
+
   if (!message) return null;
 
   const style = {
